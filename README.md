@@ -26,6 +26,7 @@ $ pip install -r requirements.txt
 - [**Dataset**](dataset/): Safe detailed tasks(300 samples), unsafe detailed tasks(300 samples), abstract tasks(100 samples) and long-horizon tasks(50 samples).
 - [**Evaluators**](evaluator/): Evaluation metrics for each type of task, including success rate, rejection rate, and other metrics.
 - [**low-level controller**](low_level_controller/): A low-level controller for SafeAgentEnv, which takes in the high-level action and map them to low-level actions supported by AI2-THOR for the agent to execute. You can choose multi-agent version or single-agent version. 
+- [**Methods**](methods/): Implementation of the proposed methods.
 
 ## SOTA Embodied LLM Agents
 

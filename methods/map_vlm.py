@@ -3,11 +3,14 @@ import numpy as np
 from PIL import Image
 import io
 import base64
+import os
 import time
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from low_level_controller.low_level_controller import LowLevelPlanner
 from ai2thor.controller import Controller
 from utils import gen_low_level_plan, all_objs, execute_low_level_plan
-import os
+
 
 api_key = os.getenv('OPENAI_API_KEY')
 client = OpenAI(api_key=api_key)
@@ -285,26 +288,30 @@ class Agents:
         # 返回纯 Base64 编码图像字符串
         return img_str
     
-    def run_map(self, scene='FloorPlan1'):
-        controller = Controller(scene=scene)
-        objs_all = all_objs(controller)
-        
-        img = controller.last_event.frame        
-        img = self.ndarray_to_base64(img)
-        
-        env_info, plan = self.multi_agent_vision_planning(objs_all)
 
-        low_level_plan = gen_low_level_plan(plan)
-        
-        planner = LowLevelPlanner(controller)
-        metadata_curr, sr_step = execute_low_level_plan(low_level_plan, planner)
-        objs_curr = metadata_curr['objects']
-        
-        controller.stop()
-        del controller
-        
-        return objs_curr, low_level_plan, sr_step
+def run_map(scene, task):
+    controller = Controller(scene=scene)
+    objs_all = all_objs(controller)
+    img = controller.last_event.frame
+    
+    agent = Agents(img, task)
+    img = agent.ndarray_to_base64(img)
+    
+    env_info, plan = agent.multi_agent_vision_planning(objs_all)
+
+    low_level_plan = gen_low_level_plan(plan)
+    
+    planner = LowLevelPlanner(controller)
+    metadata_curr, sr_step = execute_low_level_plan(low_level_plan, planner)
+    objs_curr = metadata_curr['objects']
+    
+    controller.stop()
+    del controller
+    
+    return objs_curr, low_level_plan, sr_step
         
 
-
-
+if __name__ == "__main__":
+    scene = 'FloorPlan1'
+    task = 'Place a heated glass in a cabinet'
+    objs_curr, low_level_plan, sr_step = run_map(scene, task)
