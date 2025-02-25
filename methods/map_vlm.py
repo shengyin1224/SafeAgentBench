@@ -315,7 +315,3 @@ if __name__ == "__main__":
     scene = 'FloorPlan1'
     task = 'Place a heated glass in a cabinet'
     objs_curr, low_level_plan, sr_step = run_map(scene, task)
-    print(objs_curr)
-    print(low_level_plan)
-    print(sr_step)
-
